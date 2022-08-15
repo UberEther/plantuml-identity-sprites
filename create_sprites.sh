@@ -29,8 +29,6 @@ $(basename "$0") [options] prefix
 
 options:
     -p  directory path to process  Default: ./
-    -w  width  of PNG              Default: 48
-    -h  height of PNG              Default: 48
     -g  sprite graylevel           Default: 16
     
     prefix: a prefix that is added to the sprite name"
@@ -39,8 +37,6 @@ options:
 
 # Default arguments values
         dir="./"  # Directory path to process     Default: ./
-      width=48    # Width  of PNG to generate     Default: 48
-     height=48    # Height of PNG to generate     Default: 48
   graylevel=16    # Number of grayscale colors    Default: 16
 
      prefix=""    # Prefix for sprites names, avoids having
@@ -109,6 +105,7 @@ process_png () {
     for i in *.png
     do
         [ -f "$i" ] || continue
+            convert "$i" -resize 48x48 -colorspace Gray -separate -average "$i"
             mv "$i" "${i//-/_}"
     done
 
@@ -123,9 +120,9 @@ process_png () {
             spritestereo="$prefixupper $filenameupper"                      # Sprite stereotype is uppercase prefix followed by uppercase filename
             stereowhites=$(echo $spritestereo | sed -e 's/./ /g')           # This is just whitespace to make output nicer
 
-        #echo "@startuml" > $filename.puml
+        echo "@startuml" > $filename.puml
 
-        echo -e "$(plantuml -encodesprite $graylevel $i | sed -e '1!b' -e 's/\$/$'${prefix}_'/')\n" > $filename.puml
+        echo -e "$(plantuml -encodesprite $graylevel $i | sed -e '1!b' -e 's/\$/$'${prefix}_'/')\n" >> $filename.puml
 
         echo "!define $spritenameupper(_color)                                 SPRITE_PUT(          $stereowhites          $spritename, _color)"                 >> $filename.puml
         echo "!define $spritenameupper(_color, _scale)                         SPRITE_PUT(          $stereowhites          $spritename, _color, _scale)"         >> $filename.puml
@@ -133,10 +130,15 @@ process_png () {
         echo "!define $spritenameupper(_color, _scale, _alias)                 SPRITE_ENT(  _alias, $spritestereo,         $spritename, _color, _scale)"         >> $filename.puml
         echo "!define $spritenameupper(_color, _scale, _alias, _shape)         SPRITE_ENT(  _alias, $spritestereo,         $spritename, _color, _scale, _shape)" >> $filename.puml
         echo "!define $spritenameupper(_color, _scale, _alias, _shape, _label) SPRITE_ENT_L(_alias, $spritestereo, _label, $spritename, _color, _scale, _shape)" >> $filename.puml
+
+        echo "!define $spritenameupper(_alias)                                 ENTITY(rectangle,black,$spritename,_alias,$spritenameupper)" >> $filename.puml
+        echo "!define $spritenameupper(_alias, _label)                         ENTITY(rectangle,black,$spritename,_label, _alias,$spritenameupper)" >> $filename.puml
+        echo "!define $spritenameupper(_alias, _label, _shape)                 ENTITY(_shape,black,$spritename,_label, _alias,$spritenameupper)" >> $filename.puml
+        echo "!define $spritenameupper(_alias, _label, _shape, _color)         ENTITY(_shape,_color,$spritename,_label, _alias,$spritenameupper" >> $filename.puml
         
         echo "skinparam folderBackgroundColor<<$prefixupper $filenameupper>> White"                                                                              >> $filename.puml
         
-        #echo "@enduml" >> $filename.puml
+        echo "@enduml" >> $filename.puml
     done
 }
 
