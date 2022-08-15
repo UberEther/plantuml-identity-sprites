@@ -109,6 +109,12 @@ process_png () {
     for i in *.png
     do
         [ -f "$i" ] || continue
+            mv "$i" "${i//-/_}"
+    done
+
+    for i in *.png
+    do
+        [ -f "$i" ] || continue
 
             filename=$(echo $i | sed -e 's/.png$//')                        # Filename without extension
             filenameupper=$(echo $filename | tr '[:lower:]' '[:upper:]')    # Filename without extension in uppercase

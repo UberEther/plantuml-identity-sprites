@@ -10,24 +10,24 @@ This work was started with examples from the great script by Anthony in the Plan
 Import the sprites that you want
 
 ```puml
-!include ../identicons-set-v1/icon-api.puml
-!include ../identicons-set-v2/icon-browser.puml
-!include ../identicons-set-v2/icon-webauthn.puml
+!include ../identicons-set-v1/icon_api.puml
+!include ../identicons-set-v2/icon_browser.puml
+!include ../identicons-set-v2/icon_webauthn.puml
 ```
 
 or via url
 
 ```puml
 !includeurl ICONURL/common.puml
-!includeurl ICONURL/identicons-set-v1/icon-api.puml
-!includeurl ICONURL/identicons-set-v2/icon-browser.puml
-!includeurl ICONURL/identicons-set-v2/icon-webauthn.puml
+!includeurl ICONURL/identicons-set-v1/icon_api.puml
+!includeurl ICONURL/identicons-set-v2/icon_browser.puml
+!includeurl ICONURL/identicons-set-v2/icon_webauthn.puml
 ```
 
 To use the sprites add one of the macros
 
 ```puml
-DEV_MYSQL(db)
+ID1_ICON_API(api)
 ```
 
 The macros are prefixed with the set and the name of the icon
@@ -38,18 +38,6 @@ The macros are prefixed with the set and the name of the icon
 <prefix>_<name>(alias,label,shape)
 <prefix>_<name>(alias,label,shape,color)
 ```
-
-Using the icon from devicons for mysql
-
-```puml
-DEV_MYSQL(db1)
-DEV_MYSQL(db2,label of db2)
-DEV_MYSQL(db3,label of db3,database)
-DEV_MYSQL(db4,label of db4,database,red) #DeepSkyBlue
-```
-
-![overload-example](examples/overload-example.png)
-
 ## Icon Sets
 
 The following icon sets are included:
@@ -63,9 +51,7 @@ The following icon sets are included:
 ### Mac OSX
 
 ```terminal
-brew install node yarn librsvg openjdk-11-jre graphviz plantuml
-yarn install
-yarn build
+./create_sprites.sh -p identicons-set-v2 ID2
 ```
 
 ## Note
