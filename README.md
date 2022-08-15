@@ -5,7 +5,7 @@
 This work was started with examples from the great script by Anthony in the PlantUML repo at [https://github.com/plantuml/plantuml/blob/master/tools/create_sprites.sh](https://github.com/plantuml/plantuml/blob/master/tools/create_sprites.sh)
 
 ```puml
-!define ICONURL https://raw.githubusercontent.com/uberether/plantuml-identity-sprites/v1.0.0
+!define ICONURL https://raw.githubusercontent.com/uberether/plantuml-identity-sprites/main
 
 Import the sprites that you want
 
