@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# 
+#
 # (C) Copyright 2017, Anthony Gaudino
 # (C) Copyright 2022, Matt Topper <matt@uberether.com> and UberEther contributors
-# 
+#
 # The following script is derivative work of Anthony's sprite generator script found at:
 # https://github.com/Piotr1215/sprites/blob/master/sprites/create_sprites.sh
 # which is licensed via the GPL. This code therefore is also licensed under the terms
 # of the GNU General Public License.
-# 
+#
 
 #
 # Batch creates sprite files for PlantUml
@@ -30,7 +30,7 @@ $(basename "$0") [options] prefix
 options:
     -p  directory path to process  Default: ./
     -g  sprite graylevel           Default: 16
-    
+
     prefix: a prefix that is added to the sprite name"
 
 
@@ -39,8 +39,8 @@ options:
         dir="./"  # Directory path to process     Default: ./
   graylevel=16    # Number of grayscale colors    Default: 16
 
-     prefix=""    # Prefix for sprites names, avoids having
-prefixupper=""    # two sprites with same name on STDLIB
+      prefix=""    # Prefix for sprites names, avoids having
+ prefixupper=""    # two sprites with same name on STDLIB
 
 
 
@@ -89,8 +89,14 @@ main () {
         echo "$usage"
         exit 1
     fi
-    
+
     cd "$dir"
+
+    # Setup Index Generation
+    echo "# $dir" > index.md
+	echo "### Overview" >> index.md
+	echo "| Name  | Macro  | Image | Url |" >>index.md;
+	echo "|-------|--------|-------|-----|" >>index.md;
 
     process_png
 }
@@ -105,7 +111,7 @@ process_png () {
     for i in *.png
     do
         [ -f "$i" ] || continue
-            convert "$i" -resize 48x48 -colorspace Gray -separate -average "$i"
+            convert "$i" -resize 48x48 -channel RGBA -matte -colorspace gray -transparent none -average "$i"
             mv "$i" "${i//-/_}"
     done
 
@@ -135,10 +141,15 @@ process_png () {
         echo "!define $spritenameupper(_alias, _label)                         ENTITY(rectangle,black,$spritename,_label, _alias,$spritenameupper)" >> $filename.puml
         echo "!define $spritenameupper(_alias, _label, _shape)                 ENTITY(_shape,black,$spritename,_label, _alias,$spritenameupper)" >> $filename.puml
         echo "!define $spritenameupper(_alias, _label, _shape, _color)         ENTITY(_shape,_color,$spritename,_label, _alias,$spritenameupper" >> $filename.puml
-        
+
         echo "skinparam folderBackgroundColor<<$prefixupper $filenameupper>> White"                                                                              >> $filename.puml
-        
+
         echo "@enduml" >> $filename.puml
+
+
+        # Populate the index.md
+        echo "| $filename | ${prefixupper}_$filenameupper | ![image-$filename]($filename.png) |$filename.puml |" >> index.md
+
     done
 }
 
